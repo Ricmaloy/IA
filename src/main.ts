@@ -1,6 +1,9 @@
-import { MAZE1, Maze } from "./algorithms/maze";
+import { IterativeDepthFirstSearch } from "./algorithms/maze/idfs";
+import { Maze } from "./algorithms/maze/maze";
+import { MAZE1, MAZE2, MAZE3 } from "./algorithms/maze/utils";
 
-const maze = new Maze(MAZE1);
-console.log(maze.getNeighbors(maze.initialNode));
+const maze = new Maze(MAZE2);
+const idfs = new IterativeDepthFirstSearch(maze, 3);
 
-console.log(maze.getGlobalCost(maze.initialNode, maze['getNode'](0, 0)));
+console.log(maze);
+idfs.start()

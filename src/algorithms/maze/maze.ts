@@ -1,4 +1,5 @@
-import { Neighbor, Node, Searchable } from "../commons/searchable";
+import { Neighbor, Node, Searchable } from "../../commons/searchable";
+import { charMap } from "./utils";
 
 export class MazeNode implements Node {
     constructor(
@@ -7,24 +8,6 @@ export class MazeNode implements Node {
         public readonly column: number,
     ) { }
 }
-
-export const MAZE1 = `
-#@#######
-# #     #
-# ### ###
-#   # # #
-### # # #
-#   #   #
-### # # #
-#     # #
-#####X###`;
-
-const charMap = {
-    ' ': 0,
-    '#': 1,
-    '@': 2,
-    'X': 3,
-};
 
 export class Maze implements Searchable {
     private readonly matrix: number[][];
