@@ -12,17 +12,6 @@ export class MazeNode implements Node {
     }
 }
 
-export const MAZE1 = `
-#@#######
-# #     #
-# # # ###
-#   # # #
-### # # #
-#   #   #
-##### # #
-#     # #
-##X######`;
-
 const charMap = {
     ' ': 0,
     '#': 1,
