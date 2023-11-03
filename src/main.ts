@@ -14,5 +14,6 @@ const ucs = new UniformCostSearch(maze);
     console.log(`Solução ${search.constructor.name}:`);
     const path = search.getPath();
     console.log(path.map(n => n.toString()).join('; '));
+    console.log('Nós visitados:', search.visitedNodesCount);
     maze.printSolution(path as MazeNode[]);
 });

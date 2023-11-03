@@ -9,6 +9,11 @@ export class IterativeDepthFirstSearch implements Search {
   public visitedNodes: MazeNode[];
   public readonly limit: number;
 
+  private _visitedNodesCount: number = 0;
+  get visitedNodesCount(): number {
+      return this._visitedNodesCount;
+  }
+
   constructor(maze: Maze, limit: number){
     this.maze = maze;
     this.initialNode = maze.initialNode;
@@ -54,6 +59,7 @@ export class IterativeDepthFirstSearch implements Search {
   }
 
   exploreNode(currentNode: MazeNode, limit: number): Boolean {
+    this._visitedNodesCount++;
 
     if(limit === 0) {
       return false;

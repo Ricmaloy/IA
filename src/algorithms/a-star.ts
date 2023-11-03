@@ -8,6 +8,11 @@ export class AStar implements Search {
     private gScore: Map<string, number> = new Map();
     private fScore: Map<string, number> = new Map();
 
+    private _visitedNodesCount: number = 0;
+    get visitedNodesCount(): number {
+        return this._visitedNodesCount;
+    }
+
     constructor(
         private readonly searchable: Searchable,
     ) { }
@@ -20,6 +25,7 @@ export class AStar implements Search {
         this.fScore.set(initialNode.toString(), this.searchable.getGlobalCost(initialNode, finalNode));
 
         while (this.openNodes.length > 0) {
+            this._visitedNodesCount++;
             const current = this.getNodeWithLowestFScore();
             //// Descomente para ver o algoritmo explorando
             // this.searchable.printNode(current);

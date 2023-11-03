@@ -1,18 +1,20 @@
 import { Search } from "../commons/search";
 import { Neighbor, Node, Searchable } from "../commons/searchable";
 
-function ucs(searchable: Searchable): Node[] | null {
+function ucs(searchable: Searchable): [Node[] | null, number] {
     const start = searchable.initialNode;
     const target = searchable.finalNode;
     const queue: Neighbor[] = [{ node: start, cost: 0 }];
     const visited: Set<string> = new Set();
     const previous: Map<string, Node> = new Map();
+    let visitedNodes = 0;
 
     while (queue.length) {
+        visitedNodes++;
         queue.sort((a, b) => a.cost - b.cost);
         const current = queue.shift()!;
         if (current.node.toString() === target.toString()) {
-            return reconstructPath(start, target, previous);
+            return [reconstructPath(start, target, previous), visitedNodes];
         }
 
         visited.add(current.node.toString());
@@ -27,7 +29,7 @@ function ucs(searchable: Searchable): Node[] | null {
         }
     }
 
-    return null;
+    return [null, 0];
 }
 
 function reconstructPath(start: Node, end: Node, previous: Map<string, Node>): Node[] {
@@ -42,11 +44,18 @@ function reconstructPath(start: Node, end: Node, previous: Map<string, Node>): N
 }
 
 export class UniformCostSearch implements Search {
+    private _visitedNodesCount: number;
+    get visitedNodesCount(): number {
+        return this._visitedNodesCount;
+    }
+
     constructor(
         private readonly searchable: Searchable,
     ) { }
 
     getPath(): Node[] {
-        return ucs(this.searchable);
+        const [path, visitedNodesCount] = ucs(this.searchable);
+        this._visitedNodesCount = visitedNodesCount;
+        return path;
     }
 }
