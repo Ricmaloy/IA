@@ -1,6 +1,7 @@
+import { Search } from "../commons/search";
 import { Node, Searchable } from "../commons/searchable";
 
-export class AStar {
+export class AStar implements Search {
     private openNodes: Node[] = [];
     private closedNodes: Node[] = [];
     private cameFrom: Map<string, Node|null> = new Map();

@@ -112,4 +112,19 @@ export class Maze implements Searchable {
 
         console.log(maze, '\n\n\n');
     }
+
+    printSolution(solution: MazeNode[]): void {
+        let getChar = (row: number, col: number, value: number) => {
+            if(value === 1) {
+                return '#';
+            }
+
+            const isPath = solution.find(node => row === node.row && col === node.column);
+            return isPath ? '.' : ' ';
+        }
+        const maze = this.matrix.map((l, i) =>
+            l.map((c, j) => getChar(i, j, c)).join('')).join('\n');
+
+        console.log(maze, '\n');
+    }
 }

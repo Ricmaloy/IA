@@ -1,107 +1,52 @@
-type Point = {
-    x: number;
-    y: number;
-};
+import { Search } from "../commons/search";
+import { Neighbor, Node, Searchable } from "../commons/searchable";
 
-type No = {
-    position: Point;
-    cost: number;
-};
-
-const labirinto = [
-    [2, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-    [1, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-    [1, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [0, 0, 0, 1, 0, 1, 0, 1, 0, 0],
-    [0, 0, 0, 1, 0, 1, 0, 1, 0, 0],
-    [0, 0, 1, 1, 1, 1, 0, 1, 0, 0],
-    [0, 0, 1, 0, 0, 0, 0, 1, 0, 0],
-    [0, 0, 1, 0, 0, 0, 0, 1, 0, 0],
-    [0, 0, 1, 3, 1, 1, 1, 1, 0, 0]
-];
-
-const labirinto2 = [
-    [0, 0, 0, 0, 2, 0, 0, 0, 0, 1],
-    [0, 0, 0, 0, 1, 0, 0, 0, 0, 1],
-    [0, 0, 0, 0, 1, 0, 0, 0, 0, 1],
-    [0, 0, 0, 1, 1, 1, 1, 1, 1, 1],
-    [0, 0, 0, 1, 0, 1, 0, 1, 0, 0],
-    [0, 0, 0, 1, 0, 1, 0, 1, 0, 0],
-    [0, 0, 1, 1, 1, 1, 0, 1, 0, 0],
-    [0, 0, 1, 0, 1, 0, 0, 1, 0, 0],
-    [0, 0, 1, 0, 1, 0, 0, 1, 0, 0],
-    [0, 0, 1, 1, 1, 3, 1, 1, 0, 0]
-];
-
-const labirinto3 = [
-    [0, 0, 0, 0, 3, 0, 0, 0, 0, 2],
-    [0, 0, 0, 0, 1, 0, 0, 0, 0, 1],
-    [0, 0, 0, 0, 1, 0, 0, 0, 0, 1],
-    [0, 0, 0, 1, 1, 1, 1, 1, 1, 1],
-    [0, 0, 0, 1, 0, 1, 0, 1, 0, 0],
-    [0, 0, 0, 1, 0, 1, 0, 1, 0, 0],
-    [0, 0, 1, 1, 1, 1, 0, 1, 0, 0],
-    [0, 0, 1, 0, 1, 0, 0, 1, 0, 0],
-    [0, 0, 1, 0, 1, 0, 0, 1, 0, 0],
-    [0, 0, 1, 1, 1, 0, 1, 1, 0, 0]
-]
-
-const moves = [
-    { x: 0, y: -1 },//baixo
-    { x: -1, y: 0 },//esquerda
-    { x: 1, y: 0 },//direita
-    { x: 0, y: 1 }//cima
-];
-
-function ucs(start: Point, target: Point, grid: number[][]): Point[] | null {
-    const rows = grid.length;
-    const cols = grid[0].length;
-    const queue: No[] = [{ position: start, cost: 0 }];
-    const visited: boolean[][] = Array.from({ length: rows }, () => Array(cols).fill(false));
-    const previous: {[key: string]: Point | null} = {};
+function ucs(searchable: Searchable): Node[] | null {
+    const start = searchable.initialNode;
+    const target = searchable.finalNode;
+    const queue: Neighbor[] = [{ node: start, cost: 0 }];
+    const visited: Set<string> = new Set();
+    const previous: Map<string, Node> = new Map();
 
     while (queue.length) {
         queue.sort((a, b) => a.cost - b.cost);
         const current = queue.shift()!;
-        if (current.position.x === target.x && current.position.y === target.y) {
+        if (current.node.toString() === target.toString()) {
             return reconstructPath(start, target, previous);
         }
 
-        visited[current.position.y][current.position.x] = true;
+        visited.add(current.node.toString());
 
-        for (const move of moves) {
-            const newX = current.position.x + move.x;
-            const newY = current.position.y + move.y;
-
-            if (newX >= 0 && newX < cols && newY >= 0 && newY < rows && !visited[newY][newX] && grid[newY][newX] !== 0) {
-                const cost = current.cost + 1; // Neste caso, o custo é 1 para cada movimento.
-                queue.push({ position: { x: newX, y: newY }, cost: cost });
-                previous[`${newX},${newY}`] = current.position;
+        for (const neighbor of searchable.getNeighbors(current.node)) {
+            if (visited.has(neighbor.node.toString())) {
+                continue;
             }
+
+            queue.push(neighbor);
+            previous.set(neighbor.node.toString(), current.node);
         }
     }
 
     return null;
 }
 
-function reconstructPath(start: Point, end: Point, previous: {[key: string]: Point | null}): Point[] {
-    const path: Point[] = [];
-    let current: Point | null = end;
-    while (current !== start && current !== null) {
+function reconstructPath(start: Node, end: Node, previous: Map<string, Node>): Node[] {
+    const path: Node[] = [];
+    let current: Node = end;
+    while (current && current.toString() !== start.toString()) {
         path.push(current);
-        current = previous[`${current.x},${current.y}`];
+        current = previous.get(current.toString());
     }
     path.push(start);
     return path.reverse();
 }
 
-const start: Point = { x: 0, y: 0 };
-const end: Point = { x: 3, y: 9 };
-const path = ucs(start, end, labirinto);
+export class UniformCostSearch implements Search {
+    constructor(
+        private readonly searchable: Searchable,
+    ) { }
 
-if (path) {
-    console.log('Path:', path);
-} else {
-    console.log('No path found');
+    getPath(): Node[] {
+        return ucs(this.searchable);
+    }
 }

@@ -1,7 +1,8 @@
+import { Search } from "../commons/search";
 import { Neighbor } from "../commons/searchable";
 import { Maze, MazeNode } from "./maze";
 
-export class IterativeDepthFirstSearch {
+export class IterativeDepthFirstSearch implements Search {
   public maze: Maze;
   public initialNode: MazeNode;
   public stack: MazeNode[];
@@ -98,6 +99,14 @@ export class IterativeDepthFirstSearch {
     console.log();
     this.showCurrentStack();
     this.showVisitedNodes();
+  }
+
+  getPath(): MazeNode[] {
+    this.exploreNode(this.initialNode, this.limit);   
+
+    this.addNodeToStack(this.initialNode);
+    this.stack.reverse();
+    return this.visitedNodes;
   }
 
   start() {
