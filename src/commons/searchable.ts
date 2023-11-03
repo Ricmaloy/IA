@@ -1,4 +1,6 @@
-export interface Node { }
+export interface Node {
+    toString(): string;
+}
 
 export class Neighbor {
     private constructor(
@@ -14,6 +16,8 @@ export class Neighbor {
 export interface Searchable {
 
     initialNode: Node;
+    finalNode: Node;
     getNeighbors(src: Node): Neighbor[];
     getGlobalCost(src: Node, dst: Node): number;
+    printNode(node: Node): void;
 }
