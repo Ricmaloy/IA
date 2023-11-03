@@ -1,9 +1,9 @@
+
 import { IterativeDepthFirstSearch } from "./algorithms/idfs";
-import { Maze } from "./algorithms/maze";
-import { MAZE1 } from "./algorithms/maze";
+import { AStar } from "./algorithms/a-star";
+import { MAZE1, Maze } from "./algorithms/maze";
 
 const maze = new Maze(MAZE1);
-const idfs = new IterativeDepthFirstSearch(maze, 7);
 
-console.log(maze);
-idfs.start()
+const search = new AStar(maze);
+const idfs = new IterativeDepthFirstSearch(maze, 3);
