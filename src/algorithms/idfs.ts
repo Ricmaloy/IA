@@ -1,4 +1,4 @@
-import { Neighbor } from "../../commons/searchable";
+import { Neighbor } from "../commons/searchable";
 import { Maze, MazeNode } from "./maze";
 
 export class IterativeDepthFirstSearch {
@@ -6,7 +6,7 @@ export class IterativeDepthFirstSearch {
   public initialNode: MazeNode;
   public stack: MazeNode[];
   public visitedNodes: MazeNode[];
-  public readonly limit;
+  public readonly limit: number;
 
   constructor(maze: Maze, limit: number){
     this.maze = maze;
@@ -52,14 +52,19 @@ export class IterativeDepthFirstSearch {
     return filteredNeighbors;
   }
 
-  exploreNode(currentNode: MazeNode): Boolean {
-    this.addNodeToVisited(currentNode);
+  exploreNode(currentNode: MazeNode, limit: number): Boolean {
+
+    if(limit === 0) {
+      return false;
+    }
+
+    this.addNodeToVisited(currentNode)
     
     // Caso base: Verificar se a posição atual é a saída
     if(currentNode.value === 3){
       return true; 
     }
-
+    
     // Caso recursivo: Posição atual ainda não foi visitada 
     const neighbors = this.maze
         .getNeighbors(currentNode)
@@ -73,10 +78,10 @@ export class IterativeDepthFirstSearch {
         validNeighbors[i]['row'], 
         validNeighbors[i]['column']
       );
-
-      if(this.exploreNode(node)){
+ 
+      if(this.exploreNode(node, limit - 1)){
         this.addNodeToStack(node);
-
+        
         return true;
       };
     }
@@ -84,8 +89,8 @@ export class IterativeDepthFirstSearch {
     return false;
   }
 
-  start() {
-    this.exploreNode(this.initialNode);
+  solveMaze(limit: number) {
+    this.exploreNode(this.initialNode, limit);   
 
     this.addNodeToStack(this.initialNode);
     this.stack.reverse();
@@ -93,5 +98,11 @@ export class IterativeDepthFirstSearch {
     console.log();
     this.showCurrentStack();
     this.showVisitedNodes();
+  }
+
+  start() {
+    for(var i = 0; i <= this.limit; i++) {
+      this.solveMaze(i);
+    }
   }
 }

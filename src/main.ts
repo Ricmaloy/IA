@@ -1,9 +1,9 @@
-import { IterativeDepthFirstSearch } from "./algorithms/maze/idfs";
-import { Maze } from "./algorithms/maze/maze";
-import { MAZE1, MAZE2, MAZE3 } from "./algorithms/maze/utils";
+import { IterativeDepthFirstSearch } from "./algorithms/idfs";
+import { Maze } from "./algorithms/maze";
+import { MAZE1 } from "./algorithms/maze";
 
-const maze = new Maze(MAZE3);
-const idfs = new IterativeDepthFirstSearch(maze, 3);
+const maze = new Maze(MAZE1);
+const idfs = new IterativeDepthFirstSearch(maze, 7);
 
 console.log(maze);
 idfs.start()
